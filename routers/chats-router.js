@@ -2,16 +2,16 @@ var express = require('express')
 var router = express.Router();
 var chat = require('../models/chat');
 
-//crear un chat
+/*//crear un chat
 router.post('/', function(req, res){
-    let nuevo_chat =  new chat(
-        [{
-            mensajes : req.body.mensajes,
-            emisor: req.body.emisor,
-            receptor: req.body.receptor,
-            ultimoMensaje: req.body.ultimoMensaje,
-            fechaConversacion: req.body.fechaConversacion
-        }]
+    let nuevoChat =  new chat(
+        {
+            "mensaje": [],
+            "emisor": "",
+            "receptor": "",
+            "ultimoMensaje": "",
+            "fechaConversacion": ""
+        }
     );
     nuevo_chat.save().then(result=>{
         res.send(result);
@@ -20,10 +20,9 @@ router.post('/', function(req, res){
         res.send(error);
         res.end()
     });
-});
+});*/
 
-
-//obtener todos los chats
+/*//obtener todos los chats
 router.get('/',function(req,res){
     chat.find().then(result=>{
         res.send(result);
@@ -32,7 +31,7 @@ router.get('/',function(req,res){
         res.send(error);
         res.end()
     });
-});
+});*/
 
 //obterner un chat
 router.get('/:id',function(req,res){

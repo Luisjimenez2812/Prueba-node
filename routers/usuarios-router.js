@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var router = express.Router();
 var usuario = require('../models/usuario');
 
-//Guardar Usuario post
+//Registrar Usuario
 router.post('/registro',function(req,res){
     let nuevoUsuario = new usuario(
         {
@@ -25,7 +25,7 @@ router.post('/registro',function(req,res){
     });
 });
 
-//Login post
+//Login usuario
 router.post('/login',function(req,res){
     usuario.find(
         {
@@ -42,7 +42,7 @@ router.post('/login',function(req,res){
     });
 });
 
-//Actualizar Usuario Put
+//Actualizar información usuario
 router.put('/:id',function(req,res){
     usuario.updateOne(
         {
@@ -84,67 +84,78 @@ router.post('/:idUsuario/contactos',function(req,res){
     });
 });
 
-
-
-
-
-//Actualizar lista conversacion
-
-router.put('/:idUsuario/conversaciones/idConversacion',function(req,res){
-    var conversaciones = []
-    var idTemp;
-    usuario.find(
-        {
-            _id:req.params.idUsuario
-        },
-        {
-            conversaciones:true,
-            _id:false
-        }    
-    ).then(result=>{
-        conversaciones=result[0].conversaciones
-        for (let i = 0; i < conversaciones.length; i++) {
-            const element = conversaciones[i];
-            idConv = JSON.stringify(element._id).replace("\"","").replace("\"","");
-            // console.log(JSON.stringify(element._id).replace("\"","").replace("\"",""))
-            if(idConv == req.params.idConversacion){
-                idTemp = idConv
-            }
-        }
-        res.send(result[0]);
-        res.end();
-    }).catch(error=>{
-        res.send(error);
-        res.end();
-    });
-
-    console.log(idTemp);
-    // usuario.updateOne(
-    //     {
-    //         _id:req.params.idUsuario,
-    //         "conversaciones._id": mongoose.Types.ObjectId(req.params.idConversacion)
-    //     },
-    //     {
-    //         $set:{
-    //             "conversaciones.$":{
-    //                 _id: mongoose.Types.ObjectId(req.params.idConversacion),
-    //                 ultimoMensaje: req.body.ultimoMensaje,
-    //                 horaUltimoMensaje: req.body.horaUltimoMensaje,
-    //                 nombreDestinatario: req.body.nombreDestinatario,
-    //                 imagenDestinatario: req.body.imagenDestinatario
-    //             }
-    //         }
-    //     }
-    // ).then(result=>{
-    //     res.send(result[0]);
-    //     res.end();
-    // }).catch(error=>{
-    //     res.send(error);
-    //     res.end();
-    // });
+//Actualizar última conversación de un usuario de la lista de conversaciones
+router.put("/:idUsuario/conversaciones/:idConversacion", (req, res) => {
+	usuario
+		.updateOne(
+			{
+				_id: mongoose.Types.ObjectId(req.params.idUsuario),
+				"conversaciones._id": mongoose.Types.ObjectId(
+					req.params.idConversacion
+				),
+			},
+			{
+				$set: {
+					"conversaciones.$": {
+						_id: mongoose.Types.ObjectId(req.params.idConversacion),
+						ultimoMensaje: req.body.ultimoMensaje,
+						horaUltimoMensaje: req.body.horaUltimoMensaje,
+						nombreDestinatario: req.body.nombreDestinatario,
+						imagenDestinatario: req.body.imagenDestinatario
+					},
+				},
+			}
+		)
+		.then((result) => {
+			res.send(result);
+			res.end();
+		})
+		.catch((error) => {
+			res.send(error);
+			res.end();
+		});
 });
 
-//Obtener un Usuario get
+//Obtener lista de conversaciones de un usuario
+router.get("/:idUsuario/conversaciones", (req, res) => {
+	usuario
+		.find(
+			{_id: mongoose.Types.ObjectId(req.params.idUsuario)},
+			{}
+		)
+		.then((result) => {
+			res.send(result[0].conversaciones);
+			res.end();
+		})
+		.catch((error) => {
+			res.send(error);
+			res.end();
+		});
+});
+
+//Obtener busqueda chat 
+router.get("/:idUsuario/conversaciones/:busqueda", (req, res) => {
+    var conversacionesUsuario = [];
+	usuario
+		.find(
+			{_id: mongoose.Types.ObjectId(req.params.idUsuario)},
+			{}
+		)
+		.then((result) => {
+            conversacionesUsuario = result[0].conversaciones;
+            for (let i = 0; i < conversacionesUsuario.length; i++) {
+                if (req.params.busqueda == conversacionesUsuario[i].nombreDestinatario) {
+                    res.send(conversacionesUsuario[i]);res.end();
+                }
+            }
+		})
+		.catch((error) => {
+			res.send(error);
+			res.end();
+		});
+});
+
+//Obtener un usuario
 router.get('/:id',function(req,res){
     usuario.find(
         {
