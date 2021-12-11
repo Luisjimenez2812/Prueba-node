@@ -123,8 +123,34 @@ router.post("/:idChat/mensajes", (req, res) => {
 					}
 				)
 				.then((result2) => {
-					res.send({ conversacion: result1, usuario: result2 });
-					res.end();
+					usuario
+						.updateOne(
+							{
+								_id: mongoose.Types.ObjectId(req.body.receptor._id),
+								"conversaciones._id": mongoose.Types.ObjectId(
+									req.params.idChat
+								),
+							},
+							{
+								$set: {
+									"conversaciones.$": {
+										_id: mongoose.Types.ObjectId(req.params.idChat),
+										ultimoMensaje: req.body.mensajes[0].contenido,
+										horaUltimoMensaje: req.body.mensajes[0].hora,
+										nombreDestinatario: req.body.receptor.nombre,
+										imagenDestinatario: req.body.receptor.imagen,
+									},
+								},
+							}
+						)
+						.then((result2) => {
+							res.send({ conversacion: result1, usuario: result2 });
+							res.end();
+						})
+						.catch((error) => {
+							res.send(error);
+							res.end();
+						});
 				})
 				.catch((error) => {
 					res.send(error);
