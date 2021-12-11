@@ -240,7 +240,7 @@ db.usuarios.insertMany([
 db.chats.insertMany([
     {
         "_id": ObjectId(),
-        "mensaje": [
+        "mensajes": [
             {
                 "_id": ObjectId(),
                 "emisor": {

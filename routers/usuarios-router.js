@@ -136,6 +136,7 @@ router.get("/:idUsuario/conversaciones", (req, res) => {
 //Obtener busqueda chat 
 router.get("/:idUsuario/conversaciones/:busqueda", (req, res) => {
     var conversacionesUsuario = [];
+    //var regexp = r`usuarios\/[\w\s]*[^\W]*\/[\w\s]*[^\W]*`
 	usuario
 		.find(
 			{_id: mongoose.Types.ObjectId(req.params.idUsuario)},

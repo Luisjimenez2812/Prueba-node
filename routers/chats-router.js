@@ -1,37 +1,119 @@
 var express = require('express')
 var router = express.Router();
 var chat = require('../models/chat');
+var usuario = require('../models/usuario');
+var mongoose = require('mongoose');
 
-/*//crear un chat
-router.post('/', function(req, res){
-    let nuevoChat =  new chat(
-        {
-            "mensaje": [],
-            "emisor": "",
-            "receptor": "",
-            "ultimoMensaje": "",
-            "fechaConversacion": ""
-        }
-    );
-    nuevo_chat.save().then(result=>{
-        res.send(result);
-        res.end();
-    }).catch(error=>{
-        res.send(error);
-        res.end()
-    });
-});*/
+//Crear chat
+router.post("/", (req, res) => {
+	let nuevoChat = new chat({
+		emisor: "",
+		receptor: "",
+		ultimoMensaje: "",
+		fechaConversacion: "",
+		mensajes: [],
+	});
+	nuevoChat
+		.save()
+		.then((result1) => {
+            console.log(result1);
+			usuario
+				.updateOne(
+					{
+						_id: mongoose.Types.ObjectId(req.body.idUsuario),
+					},
+					{
+						$push: {
+							conversaciones: {
+								_id: mongoose.Types.ObjectId(result1._id),
+								ultimoMensaje: "",
+								horaUltimoMensaje: "",
+								nombreDestinatario: "",
+								imagenDestinatario: "",
+							},
+						},
+					}
+				)
+				.then((result2) => {
+					console.log("chats", result1);
+					console.log("usuario", result2);
+					res.send({ chat: result1, usuario: result2 });
+					res.end();
+				})
+				.catch((error) => {
+                    console.log("chats", result1);
+					console.log("usuario", result2);
+					res.send(error);
+					res.end();
+				});
+		})
+		.catch((error) => {
+			res.send(error);
+			res.end();
+		});
+});
 
-/*//obtener todos los chats
-router.get('/',function(req,res){
-    chat.find().then(result=>{
-        res.send(result);
-        res.end();
-    }).catch(error=>{
-        res.send(error);
-        res.end()
-    });
-});*/
+//Agregar un mensaje
+router.post("/:idChat/mensajes", (req, res) => {
+	chat
+		.updateOne(
+			{
+				_id: mongoose.Types.ObjectId(req.params.idChat),
+			},
+			{
+				$set: {
+					emisor: req.body.emisor,
+					receptor: req.body.receptor,
+					ultimoMensaje: req.body.ultimoMensaje,
+					fechaConversacion: req.body.fechaConversacion,
+				},
+				$push: {
+					mensajes: {
+						_id: mongoose.Types.ObjectId(),
+						emisor: req.body.emisor,
+						receptor: req.body.receptor,
+						contenido: req.body.mensajes[0].contenido,
+						hora: req.body.mensajes[0].hora
+					},
+				},
+			}
+		)
+		.then((result1) => {
+			//Actualizar la conversacion en el usuario
+			usuario
+				.updateOne(
+					{
+						_id: mongoose.Types.ObjectId(req.body.emisor._id),
+						"conversaciones._id": mongoose.Types.ObjectId(
+							req.params.idChat
+						),
+					},
+					{
+						$set: {
+							"conversaciones.$": {
+								_id: mongoose.Types.ObjectId(req.params.idConversacion),
+								ultimoMensaje: req.body.mensajes[0].contenido,
+								horaUltimoMensaje: req.body.mensajes[0].hora,
+								nombreDestinatario: req.body.receptor.nombre,
+								imagenDestinatario: req.body.receptor.imagen,
+							},
+						},
+					}
+				)
+				.then((result2) => {
+					res.send({ conversacion: result1, usuario: result2 });
+					res.end();
+				})
+				.catch((error) => {
+					res.send(error);
+					res.end();
+				});
+		})
+		.catch((error) => {
+			res.send(error);
+			res.end();
+		});
+});
 
 //obterner un chat
 router.get('/:id',function(req,res){
