@@ -16,7 +16,6 @@ router.post("/", (req, res) => {
 	nuevoChat
 		.save()
 		.then((result1) => {
-            console.log(result1);
 			usuario
 				.updateOne(
 					{
@@ -35,14 +34,36 @@ router.post("/", (req, res) => {
 					}
 				)
 				.then((result2) => {
-					console.log("chats", result1);
-					console.log("usuario", result2);
-					res.send({ chat: result1, usuario: result2 });
-					res.end();
+
+					usuario
+						.updateOne(
+							{
+								_id: mongoose.Types.ObjectId(req.body.idUsuarioReceptor),
+							},
+							{
+								$push: {
+									conversaciones: {
+										_id: mongoose.Types.ObjectId(result1._id),
+										ultimoMensaje: "",
+										horaUltimoMensaje: "",
+										nombreDestinatario: "",
+										imagenDestinatario: "",
+									},
+								},
+							}
+						)
+						.then((result3) => {
+							res.send({ chat: result1, usuario: result2, usuarioReceptor: result3 });
+							res.end();
+						})
+						.catch((error) => {
+							res.send(error);
+							res.end();
+						}
+					);
+					
 				})
 				.catch((error) => {
-                    console.log("chats", result1);
-					console.log("usuario", result2);
 					res.send(error);
 					res.end();
 				});
