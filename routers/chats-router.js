@@ -73,12 +73,13 @@ router.post("/:idChat/mensajes", (req, res) => {
 						emisor: req.body.emisor,
 						receptor: req.body.receptor,
 						contenido: req.body.mensajes[0].contenido,
-						hora: req.body.mensajes[0].hora
+						hora: req.body.mensajes[0].hora,
 					},
 				},
 			}
 		)
 		.then((result1) => {
+			console.log(req.body)
 			//Actualizar la conversacion en el usuario
 			usuario
 				.updateOne(
@@ -91,7 +92,7 @@ router.post("/:idChat/mensajes", (req, res) => {
 					{
 						$set: {
 							"conversaciones.$": {
-								_id: mongoose.Types.ObjectId(req.params.idConversacion),
+								_id: mongoose.Types.ObjectId(req.params.idChat),
 								ultimoMensaje: req.body.mensajes[0].contenido,
 								horaUltimoMensaje: req.body.mensajes[0].hora,
 								nombreDestinatario: req.body.receptor.nombre,
