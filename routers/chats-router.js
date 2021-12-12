@@ -13,7 +13,6 @@ router.post("/", (req, res) => {
 		fechaConversacion: "",
 		mensajes: [],
 	});
-	
 	nuevoChat
 		.save()
 		.then((result1) => {
@@ -35,7 +34,6 @@ router.post("/", (req, res) => {
 					}
 				)
 				.then((result2) => {
-
 					usuario
 						.updateOne(
 							{
@@ -48,7 +46,7 @@ router.post("/", (req, res) => {
 										ultimoMensaje: "",
 										horaUltimoMensaje: "",
 										nombreDestinatario: "",
-										imagenDestinatario: "",
+										imagenDestinatario: ""
 									},
 								},
 							}
@@ -62,7 +60,6 @@ router.post("/", (req, res) => {
 							res.end();
 						}
 					);
-					
 				})
 				.catch((error) => {
 					res.send(error);
