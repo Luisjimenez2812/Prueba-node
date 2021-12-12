@@ -13,6 +13,7 @@ router.post("/", (req, res) => {
 		fechaConversacion: "",
 		mensajes: [],
 	});
+	
 	nuevoChat
 		.save()
 		.then((result1) => {
@@ -27,8 +28,8 @@ router.post("/", (req, res) => {
 								_id: mongoose.Types.ObjectId(result1._id),
 								ultimoMensaje: "",
 								horaUltimoMensaje: "",
-								nombreDestinatario: "",
-								imagenDestinatario: "",
+								nombreDestinatario: req.body.nombreDestinatario,
+								imagenDestinatario: req.body.imagenDestinatario,
 							},
 						},
 					}
