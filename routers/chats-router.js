@@ -18,12 +18,12 @@ router.post("/", (req, res) => {
 		emisor: {
 			_id : mongoose.Types.ObjectId(req.body.idUsuario),
 			nombre: req.body.nombreEmisor,
-			foto: req.body.imagenEmisor 
+			imagen: req.body.imagenEmisor 
 		},
 		receptor: {
 			_id : mongoose.Types.ObjectId(req.body.idUsuarioReceptor),
 			nombre: req.body.nombreDestinatario,
-			foto: req.body.imagenDestinatario 
+			imagen: req.body.imagenDestinatario 
 		},
 		ultimoMensaje: "",
 		fechaConversacion: req.body.fechaConversacion,
