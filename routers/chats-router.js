@@ -4,13 +4,28 @@ var chat = require('../models/chat');
 var usuario = require('../models/usuario');
 var mongoose = require('mongoose');
 
+/*idUsuario:usuarioLogueado._id,
+					nombreEmisor: usuarioLogueado.nombre,
+					imagenEmisor: usuarioLogueado.foto,
+					idUsuarioReceptor:id,
+					nombreDestinatario: usuarioConversacion.nombre,
+					imagenDestinatario: usuarioConversacion.foto */
+
 //Crear chat
 router.post("/", (req, res) => {
 	let nuevoChat = new chat({
-		emisor: "",
-		receptor: "",
+		emisor: {
+			_id : mongoose.Types.ObjectId(req.body.idUsuario),
+			nombre: req.body.nombreEmisor,
+			foto: req.body.imagenEmisor 
+		},
+		receptor: {
+			_id : mongoose.Types.ObjectId(req.body.idUsuarioReceptor),
+			nombre: req.body.nombreDestinatario,
+			foto: req.body.imagenDestinatario 
+		},
 		ultimoMensaje: "",
-		fechaConversacion: "",
+		fechaConversacion: req.body.fechaConversacion,
 		mensajes: [],
 	});
 	nuevoChat
@@ -26,7 +41,7 @@ router.post("/", (req, res) => {
 							conversaciones: {
 								_id: mongoose.Types.ObjectId(result1._id),
 								ultimoMensaje: "",
-								horaUltimoMensaje: "",
+								horaUltimoMensaje: req.body.fechaConversacion,
 								nombreDestinatario: req.body.nombreDestinatario,
 								imagenDestinatario: req.body.imagenDestinatario,
 							},
@@ -44,9 +59,9 @@ router.post("/", (req, res) => {
 									conversaciones: {
 										_id: mongoose.Types.ObjectId(result1._id),
 										ultimoMensaje: "",
-										horaUltimoMensaje: "",
-										nombreDestinatario: "",
-										imagenDestinatario: ""
+										horaUltimoMensaje: req.body.fechaConversacion,
+										nombreDestinatario: req.body.nombreEmisor,
+										imagenDestinatario: req.body.imagenEmisor
 									},
 								},
 							}

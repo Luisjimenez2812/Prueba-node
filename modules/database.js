@@ -5,7 +5,7 @@ let user = 'dalar';
 let password = 'dalar';
 
 
-const conexion = `mongodb+srv://${user}:${password}@dalar-mensajeria.whheu.mongodb.net/${db}?retryWrites=true&w=majority`;
+const conexion = `mongodb+srv://dalar:dalar@dalar-mensajeria.whheu.mongodb.net/mensajeria?retryWrites=true&w=majority`;
 
 class Database{
     constructor(){
