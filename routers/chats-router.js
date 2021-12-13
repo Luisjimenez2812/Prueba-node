@@ -188,6 +188,7 @@ router.get('/:id',function(req,res){
     });
 });
 
+
 //obterner los chats
 router.get('/',function(req,res){
     chat.find()
