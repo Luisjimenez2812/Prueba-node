@@ -13,6 +13,7 @@ var mongoose = require('mongoose');
 
 //Crear chat
 router.post("/", (req, res) => {
+	console.log(req);
 	let nuevoChat = new chat({
 		emisor: {
 			_id : mongoose.Types.ObjectId(req.body.idUsuario),
@@ -150,8 +151,8 @@ router.post("/:idChat/mensajes", (req, res) => {
 										_id: mongoose.Types.ObjectId(req.params.idChat),
 										ultimoMensaje: req.body.mensajes[0].contenido,
 										horaUltimoMensaje: req.body.mensajes[0].hora,
-										nombreDestinatario: req.body.receptor.nombre,
-										imagenDestinatario: req.body.receptor.imagen,
+										nombreDestinatario: req.body.emisor.nombre,
+										imagenDestinatario: req.body.emisor.imagen,
 									},
 								},
 							}
@@ -180,6 +181,18 @@ router.post("/:idChat/mensajes", (req, res) => {
 router.get('/:id',function(req,res){
     chat.find({_id:req.params.id},{}).then(result=>{
         res.send(result[0]);
+        res.end();
+    }).catch(error=>{
+        res.send(error);
+        res.end()
+    });
+});
+
+//obterner los chats
+router.get('/',function(req,res){
+    chat.find()
+	.then(result=>{
+        res.send(result);
         res.end();
     }).catch(error=>{
         res.send(error);
