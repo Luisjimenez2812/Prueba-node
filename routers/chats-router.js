@@ -31,6 +31,7 @@ router.post("/", (req, res) => {
 	nuevoChat
 		.save()
 		.then((result1) => {
+			console.log(req.body.idUsuario);
 			usuario
 				.updateOne(
 					{
@@ -61,7 +62,7 @@ router.post("/", (req, res) => {
 										ultimoMensaje: "",
 										horaUltimoMensaje: req.body.fechaConversacion,
 										nombreDestinatario: req.body.nombreEmisor,
-										imagenDestinatario: req.body.imagenEmisor
+										imagenDestinatario: req.body.imagenEmisor,
 									},
 								},
 							}
@@ -136,6 +137,7 @@ router.post("/:idChat/mensajes", (req, res) => {
 					}
 				)
 				.then((result2) => {
+					console.log("receptor",req.body.receptor._id);
 					usuario
 						.updateOne(
 							{
@@ -150,8 +152,8 @@ router.post("/:idChat/mensajes", (req, res) => {
 										_id: mongoose.Types.ObjectId(req.params.idChat),
 										ultimoMensaje: req.body.mensajes[0].contenido,
 										horaUltimoMensaje: req.body.mensajes[0].hora,
-										nombreDestinatario: req.body.receptor.nombre,
-										imagenDestinatario: req.body.receptor.imagen,
+										nombreDestinatario: req.body.emisor.nombre,
+										imagenDestinatario: req.body.emisor.imagen,
 									},
 								},
 							}
